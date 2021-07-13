@@ -1,4 +1,6 @@
-<img src="http://alurakut.vercel.app/logo.svg" />
+<p align= "center">
+<img src="http://alurakut.vercel.app/logo.svg" alt="Logo do Alurakut" />
+</p>
 
 <br />
 
