@@ -19,7 +19,31 @@ function ProfileSidebar(propriedades) {
       <hr />
 
       <AlurakutProfileSidebarMenuDefault />
+      
     </Box>
+  )
+}
+
+function ProfileRelationsBox(propriedades) {
+  return (
+    <ProfileRelationsBoxWrapper>
+      <h2 className="smallTitle">
+        {propriedades.title} ({propriedades.items.length})
+      </h2>
+
+      <ul>
+        {/* {seguidores.map((itemAtual) => {
+          return (
+            <li key={itemAtual}>
+              <a href={`https://github.com/${itemAtual}.png`}>
+                <img src={`https://github.com/${itemAtual}.png`} />
+                <span>{itemAtual}</span>
+              </a>
+            </li>
+          )
+        })} */}
+      </ul>
+    </ProfileRelationsBoxWrapper>
   )
 }
 
@@ -36,6 +60,17 @@ export default function Home() {
     'maykbrito',
     'omariosouto'
   ]
+
+  const [seguidores, setSeguidores] = React.useState([]);
+  React.useEffect(function() {
+    fetch('https://api.github.com/users/kris-olvr21/followers')
+    .then(function(respostaDoServidor) {
+      return respostaDoServidor.json();
+    })
+    .then(function(respostaCompleta) {
+      setSeguidores(respostaCompleta);
+    })
+  }, [])
 
   return (
     <>
@@ -98,6 +133,7 @@ export default function Home() {
         </div>
 
         <div className="profileRelacionsArea" style={{ gridArea: 'profileRelacionsArea' }}>
+          <ProfileRelationsBox title="Seguidores" items={seguidores} />
           <ProfileRelationsBoxWrapper>
             <h2 className="smallTitle">
               Comunidades ({comunidades.length})
@@ -124,7 +160,7 @@ export default function Home() {
             <ul>
               {comunidade.map((itemAtual) => {
                 return (
-                  <li key={itemAtual}>
+                  <li key={itemAtual.id}>
                     <a href={`/users/${itemAtual}`}>
                       <img src={`https://github.com/${itemAtual}.png`} />
                       <span>{itemAtual}</span>

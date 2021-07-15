@@ -5,7 +5,6 @@ import NextLink from 'next/link';
 const BASE_URL = 'http://alurakut.vercel.app/';
 const v = '1';
 
-
 function Link({ href, children, ...props }) {
   return (
     <NextLink href={href} passHref>
@@ -19,8 +18,9 @@ function Link({ href, children, ...props }) {
 // ================================================================================================================
 // Menu
 // ================================================================================================================
-export function AlurakutMenu({ githubUser }) {
+export function AlurakutMenu() {
   const [isMenuOpen, setMenuState] = React.useState(false);
+  const user = 'kris-olvr21';
   return (
     <AlurakutMenu.Wrapper isMenuOpen={isMenuOpen}>
       <div className="container">
@@ -41,6 +41,13 @@ export function AlurakutMenu({ githubUser }) {
           <div>
             <input placeholder="Pesquisar no Orkut" />
           </div>
+
+          <a>
+            Modo dark
+          </a>
+          <div>
+            <input type="checkbox" className="dark" />
+          </div>
         </nav>
 
         <button onClick={() => setMenuState(!isMenuOpen)}>
@@ -48,7 +55,7 @@ export function AlurakutMenu({ githubUser }) {
           {!isMenuOpen && <img src={`${BASE_URL}/icons/menu-closed.svg?v=${v}`} />}
         </button>
       </div>
-      <AlurakutMenuProfileSidebar githubUser={githubUser} />
+      <AlurakutMenuProfileSidebar githubUser={user} />
     </AlurakutMenu.Wrapper>
   )
 }
@@ -57,13 +64,13 @@ AlurakutMenu.Wrapper = styled.header`
   background-color: #308BC5;
   .alurakutMenuProfileSidebar {
     background: white;
-    position: fixed;
+    position: absolute;
     z-index: 100;
     padding: 46px;
-    bottom: 0;
+    bottom: -35px;
     left: 0;
     right: 0;
-    top: 48px;
+    top: 30px;
     transition: .3s;
     pointer-events: ${({ isMenuOpen }) => isMenuOpen ? 'all' : 'none'};
     opacity: ${({ isMenuOpen }) => isMenuOpen ? '1' : '0'};
@@ -95,7 +102,7 @@ AlurakutMenu.Wrapper = styled.header`
   .container {
     background-color: #308BC5;
     padding: 7px 16px;
-    max-width: 1110px;
+    max-width: 1100px;
     margin: auto;
     display: flex;
     justify-content: space-between;
@@ -137,6 +144,12 @@ AlurakutMenu.Wrapper = styled.header`
           bottom: 0;
         }
       }
+
+      input[type="checkbox"] {
+        margin-top: 5px;
+        width: 20px;
+        height: 20px;
+      }
     }
     input {
       color: #ffffff;
@@ -152,7 +165,7 @@ AlurakutMenu.Wrapper = styled.header`
         color: #ffffff;
         opacity: 1;
       }
-    } 
+    }
   }
 `;
 AlurakutMenu.Logo = styled.img`
@@ -162,19 +175,18 @@ AlurakutMenu.Logo = styled.img`
   height: 34px;
 `;
 
-function AlurakutMenuProfileSidebar({ githubUser }) {
+function AlurakutMenuProfileSidebar(propriedades) {
   return (
     <div className="alurakutMenuProfileSidebar">
       <div>
-        <img src={`https://github.com/${githubUser}.png`} style={{ borderRadius: '8px' }} />
+        <img src={`https://github.com/${propriedades.githubUser}.png`} style={{ borderRadius: '8px' }} />
         <hr />
         <p>
-          <a className="boxLink" href={`/user/${githubUser}`}>
-            @{githubUser}
+          <a className="boxLink" href={`/user/${propriedades.githubUser}`}>
+            @{propriedades.githubUser}
           </a>
         </p>
         <hr />
-
         <AlurakutProfileSidebarMenuDefault />
       </div>
     </div>
