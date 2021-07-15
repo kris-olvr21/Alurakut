@@ -70,6 +70,34 @@ export default function Home() {
     .then(function(respostaCompleta) {
       setSeguidores(respostaCompleta);
     })
+
+    /* API GraphQL */
+    fetch('https://graphql.datocms.com/', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'e789d5918e721eba80753a668ce5f6',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify({ "query": `query {
+        allCommunities {
+          title
+          id
+          imageUrl
+          creatorSlug
+        }
+      }` })
+    })
+    .then((response) => response.json()) // Retorna o próprio response.json
+
+    .then((respostaCompleta) => { // Se abrir chaves, é necessário especificar o que deseja retornar
+      const comunidadesDato = respostaCompleta.data.allCommunities;
+
+      setComunidades(comunidadesDato)
+
+      console.log(comunidadesDato)
+    })
+
   }, [])
 
   return (
@@ -99,13 +127,25 @@ export default function Home() {
               console.log('Campo: ', dadosForm.get('image')); */
 
               const community = {
-                id: new Date().toISOString,
                 title: dadosForm.get('title'),
-                image: dadosForm.get('image'),
+                imageUrl: dadosForm.get('image'),
+                creatorSlug: user,
               }
 
-              const comunidadesAtualizadas = [...comunidades, community];
-              setComunidades(comunidadesAtualizadas);
+              fetch('/api/comunidades', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(community)
+              })
+              .then(async (response) => {
+                const dados = await response.json();
+                console.log(dados.registroCriado);
+                const community = dados.registroCriado;
+                const comunidadesAtualizadas = [...comunidades, community];
+                setComunidades(comunidadesAtualizadas);
+              })
             }}>
 
               <div>
@@ -142,8 +182,8 @@ export default function Home() {
                 {comunidades.map((itemAtual) => {
                   return (
                     <li key={itemAtual.id}>
-                      <a href={`/users/${itemAtual.title}`}>
-                        <img src={itemAtual.image} />
+                      <a href={`/comunidades/${itemAtual.id}`}>
+                        <img src={itemAtual.imageUrl} />
                         <span>{itemAtual.title}</span>
                       </a>
                     </li>
@@ -161,7 +201,7 @@ export default function Home() {
               {comunidade.map((itemAtual) => {
                 return (
                   <li key={itemAtual.id}>
-                    <a href={`/users/${itemAtual}`}>
+                    <a href={`/users/${itemAtual.id}`}>
                       <img src={`https://github.com/${itemAtual}.png`} />
                       <span>{itemAtual}</span>
                     </a>
